@@ -1,125 +1,1069 @@
 
+<!-- start: Common Header -->
+<jsp:include page="/WEB-INF/view/common/commonheader.jsp" />
+<!-- end: Common Header -->
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="cts" uri="/WEB-INF/custom.tld"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 
-<div class="row center">
-	<h1>Hello Kitty</h1>
+<link rel="stylesheet"
+	href="vendor/jquery-file-upload/css/jquery.ctsfileuploade.css"
+	media="all" />
+<style>
+input.money-field {
+	text-align: right;
+}
+
+.table.no-border tr td, .table.no-border tr th {
+	border-width: 0;
+}
+
+.basic-alignment-fixed {
+	
+}
+
+.agent-align-top-fixed {
+	margin-top: -20px;
+}
+
+@media ( min-width :768px) {
+	.basic-alignment-fixed {
+		margin-right: -26px !important;
+		margin-left: -25px !important;
+	}
+}
+
+@media ( min-width :768px) {
+	.remove-bottom-align {
+		padding-bottom: 5px !important;
+	}
+}
+</style>
+<div class="wrap-content container" id="container">
+
+	<jsp:include page="/WEB-INF/view/common/breadcrumb.jsp" />
+
+	<div class="container-fluid container-fullw bg-white">
+		<cts:AjaxForm
+			action="cbs/abs/abs_deposit/store?${_csrf.parameterName}=${_csrf.token}"
+			dataHandler="showMessage" cssClass="ajax wizard-form"
+			formEnctype="multipart/form-data">
+			<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
+			<div class="denotes-required">denotes a required field</div>
+			<div class="tabbable">
+				<ul class="nav nav-tabs tab-padding tab-space-3 tab-blue"
+					id="myTab4">
+					<li class="active"><a data-toggle="tab"
+						href="#panel_abs_basic"> Basic </a></li>
+					<li><a data-toggle="tab" href="#panel_abs_attachment">
+							Attachment </a></li>
+					<li><a data-toggle="tab" href="#panel_abs_accounting">
+							Accounting </a></li>
+				</ul>
+				<div class="tab-content">
+
+					<div id="panel_abs_basic" class="tab-pane fade active in">
+						<div
+							class="container-fluid container-fullw bg-white padding-top-5 remove-bottom-align">
+							<div class="row basic-alignment-fixed">
+
+								<div class="col-md-6">
+									<!-- Company-------------------------------------- -->
+									<div class="row margin-bottom-5">
+										<div class="col-md-12">
+											<div class="form-group">
+												<cts:Label name="Company" labelFor="company_code" />
+												<cts:Select name="company_code" cssClass=""
+													list="${data.companyCodes}" value="${data.companyCode}" />
+												<input type="hidden" id="company_name" value=""
+													name="company_name">
+											</div>
+										</div>
+									</div>
+									<!--Product Standard cash Deposit-------------------------------------- -->
+									<div class="row margin-bottom-5">
+										<div class="col-md-12">
+											<div class="form-group">
+												<cts:Label name="Product" labelFor="product_code" />
+												<cts:Select name="product_code" cssClass=""
+													list="${data.products}" value="${data.products }" />
+												<input type="hidden" id="product_name" value=""
+													name="product_name">
+											</div>
+										</div>
+									</div>
+									<!-- Transaction Code-------------------------------------- -->
+									<!-- Date Today-------------------------------------- -->
+									<div class="row margin-bottom-5">
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Transaction Reference"
+													labelFor="transaction_ref" />
+												<cts:TextBox name="transaction_ref" value="(Auto)"
+													cssClass="numeric dirty-check" maxlength="10"
+													readonly="readonly" />
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Transaction Date"
+													labelFor="transaction_date" />
+												<div class="input-group input-daterange">
+													<input type="text" class="form-control text-center"
+														id="transaction_date" name="transaction_date" value=""
+														readonly="readonly" cssClass="alpha-numeric dirty-check">
+												</div>
+											</div>
+										</div>
+									</div>
+									<!--Transaction Type-------------------------------------- -->
+									<!--Amount BDT-------------------------------------- -->
+									<div class="row margin-bottom-5">
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Transaction Type"
+													labelFor="transaction_type" />
+												<cts:Select name="transaction_type"
+													cssClass="transaction_type" list="${data.transtypes}"
+													value="${data.transtype }" />
+												<input type="hidden" id="transaction_type_id" value=""
+													name="transaction_type_id"> <input type="hidden"
+													id="transaction_type_name" value=""
+													name="transaction_type_name">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Amount" labelFor="transaction_amount" />
+												<cts:TextBox name="transaction_amount"
+													cssClass="required dirty-check transaction_amount money text-right"
+													maxlength="30" value="0.00" />
+											</div>
+										</div>
+									</div>
+
+									<!--Check #T-------------------------------------- -->
+									<div class="row margin-bottom-5 resources">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="bank_code" class="control-label">Bank
+													Name</label> <select id="bank_code" name="bank_code"
+													class="form-control sync-option-text sync-option-text required">
+													<option value="-1" selected="selected">--SELECT--</option>
+												</select> <input type="hidden" id="bank_name" value=""
+													name="bank_name">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="branch_code" class="control-label">Branch</label>
+												<select id="branch_code" name="branch_code"
+													class="form-control sync-option-text sync-option-text">
+													<option value="-1" selected="selected">--SELECT--</option>
+												</select> <input type="hidden" id="branch_name" value=""
+													name="branch_name">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Cheque Number" labelFor="cheque_number" />
+												<cts:TextBox name="cheque_number"
+													cssClass="alpha-numeric dirty-check cheque_number"
+													maxlength="30" />
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<cts:Label name="Cheque Date" labelFor="cheque_date" />
+												<div class="input-group input-daterange">
+													<input type="text"
+														class="form-control date-input cheque_date"
+														id="cheque_date" name="cheque_date" value=""> <span
+														class="input-group-addon datepicker width-38"><i
+														class="glyphicon glyphicon-calendar"></i></span>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<!--Date OTP-------------------------------------- -->
+									<div class="row margin-bottom-5"></div>
+									<!--Description-------------------------------------- -->
+									<div class="row margin-bottom-10">
+										<div class="col-md-12">
+											<div class="form-group">
+												<cts:Label name="Description" labelFor="cheque" />
+												<cts:TextArea name="description"
+													cssClass="dirty-check padding-10 resize-none txtarea min-height-155"
+													value="Deposit Your Balance" />
+											</div>
+										</div>
+									</div>
+									<div class="row margin-top-5">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-12">
+													<strong class="text-dark">Instruction </strong>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<div class="">
+														<strong class="text-dark">The following services
+															will be covered under Agent Banking: </strong></br> <i><strong
+															class="text-dark">1 :</strong> Collection of small value
+															cash deposits and cash withdrawals (ceiling should be
+															determined by BB from time to time ). </br> <strong
+															class="text-dark"> 2 :</strong> Inward foreign remittance
+															disbursement. </br> <strong class="text-dark"> 3 :</strong>
+															Facilitating small value loan disbursement and recovery
+															of loans, installments. </br> <strong class="text-dark">
+																4 :</strong> Facilitating utility bill payment. </br> <strong
+															class="text-dark"> 5 :</strong> Cash payment under social
+															safety net programme of the Government. </br> <strong
+															class="text-dark"> 6 :</strong> Facilitating fund
+															transfer(ceiling should be determined by BB from time to
+															time) etc.</i>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<!----------------------- Right Side -------------------------------------- -->
+								<div class="row hidden">
+									<div class="col-md-6 col-sm-12 col-lg-6 col-xs-6 hidden">
+										<div class="table-responsive">
+											<div id="leftShowFpData" class="dataTables_wrapper no-footer">
+
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12 col-lg-6 col-xs-6 hidden">
+										<div class="table-responsive">
+											<div id="rightShowFpData"
+												class="dataTables_wrapper no-footer"></div>
+										</div>
+									</div>
+								</div>
+								<!-- ============================================== -->
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-12">
+											<fieldset style="padding: 20px !important;">
+												<legend>
+													Customer &nbsp;(Cr.)&nbsp;
+													<cts:TooltipBtn title="Employee Search"
+														cssClass="btn btn-find" spanClass="fa fa-search"
+														id="btnEmployee" />
+
+													<cts:TooltipBtn title="Varify Biometric"
+														cssClass="btn btn-find" spanClass="fa fa-search"
+														id="varifyBiometricEmployee" />
+												</legend>
+												<div class="row">
+													<div class="col-md-8">
+														<div class="customer_information">
+															<strong class="text-dark text-bold customer_name">${data.customer.firstName}</strong>
+
+															<address style="margin-top: 5px;">
+																<strong class="text-dark">Address:</strong> <span
+																	class="customer_address">${data.customer.addr}</span> <br>
+																<strong class="text-dark">Phone:</strong> <span
+																	class="customer_phone">${data.customer.phoneRes}</span>
+																<br> <strong class="text-dark">E-mail:</strong> <a
+																	href="mailto:#" class="customer_email">
+																	${data.customer.email} </a> <input type="hidden"
+																	id="customer_id" value="" name="customer_id"> <input
+																	type="hidden" id="customer_code" value=""
+																	name="customer_code"> <input type="hidden"
+																	id="customer_name" value="" name="customer_name">
+																<input type="hidden" id="customer_address" value=""
+																	name="customer_address"> <input type="hidden"
+																	id="customer_phone" value="" name="customer_phone">
+																<input type="hidden" id="customer_email" value=""
+																	name="customer_email">
+															</address>
+														</div>
+													</div>
+													<div class="col-md-4 text-right customerImage">
+														<img class="margin-bottom-15"
+															src="/assets/images/no-profile-img.gif" alt="" id="blah"
+															class="optional customerImage" style="height: 100px;">
+													</div>
+												</div>
 
 
-	<label for="branch_name">Bank Name:</label> <input type="text"
-		id="branch_name" name="branch_name" value=""> <br> <label
-		for="bank_list">Bank List:</label> <select id="bank_list"
-		name="bank_list"
-		class="form-control sync-option-text sync-option-text">
-		<option value="-1" selected="selected">--SELECT--</option>
-	</select> <br>
-	<button onclick="submitFunction()">Submit</button>
+												<div class="row customerAccountTable">
+													<div class="col-md-12">
+														<table class="table table-condensed emp-selection-table"
+															style="margin-top: -5px;">
+															<thead>
+																<tr>
+																	<th>Bank Account</th>
+																	<th class="text-center">Type</th>
+																</tr>
+															</thead>
+															<%-- 					<tbody>
+																<c:forEach var="acctype1"
+																	items="${data.customerAccountList}">
+																	<tr>
+																		<td>
+																			<div class="row" id="agentBankAcc">
+																				<div class="col-md-12">
+																					<div class="form-group margin-bottom-0">
+																						<div
+																							class="clip-radio radio-primary optional margin-bottom-0 margin-top-0">
+																							<c:choose>
+																								<c:when
+																									test="${acctype1.subLedgerTypeName eq 'SB'}">
+																									<input id="${acctype1.accountName }"
+																										checked="checked" name="customer_account"
+																										class="customer_account" type="radio"
+																										value="${acctype1.accountName }">
+																									<label for="${acctype1.accountName }"
+																										class="control-label dirty-check">${acctype1.accountName }</label>
+																									<div id="acctype1_hidden_data">
+																										<input type="hidden"
+																											id="customer_account_name"
+																											name="customer_account_name"
+																											value="${acctype1.subLedgerTypeName }">
+																										<input type="hidden"
+																											id="customer_account_type"
+																											name="customer_account_type"
+																											value="${acctype1.subLedgerTypeName }">
+																									</div>
+																								</c:when>
+																								<c:otherwise>
+																									<input id="${acctype1.accountName }"
+																										name="customer_account"
+																										class="customer_account" type="radio"
+																										value="${acctype1.accountName }">
+																									<label for="${acctype1.accountName }"
+																										class="control-label dirty-check">${acctype1.accountName }</label>
+																								</c:otherwise>
+																							</c:choose>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</td>
+																		<td class="text-center" class="acc_type1_type">${acctype1.subLedgerTypeName}</td>
+																	</tr>
+																</c:forEach>
+
+															</tbody> --%>
 
 
+															<!-- -----------Kamrul----------- -->
+															<tbody class="customerAccountDetails">
+
+
+
+															</tbody>
+
+															<!-- ----------------------------------- -->
+														</table>
+													</div>
+												</div>
+											</fieldset>
+										</div>
+
+									</div>
+									<!-- -------------------AGENT ---------------- -->
+									<div class="row">
+										<div class="col-md-12 agent-align-top-fixed">
+											<fieldset style="padding: 20px !important;">
+												<legend> Agent &nbsp;(Dr.)&nbsp; </legend>
+												<div class="row">
+													<div class="col-md-8">
+														<div class="agent_information">
+															<strong class="text-dark text-bold agent_name">${data.agent.firstName}</strong>
+
+															<address style="margin-top: 5px;">
+																<strong class="text-dark">Address:</strong> <span
+																	class="agent_address">${data.agent.addr}</span><br>
+																<strong class="text-dark">Phone:</strong> <span
+																	class="agent_phone">${data.agent.phoneRes} </span><br>
+																<strong class="text-dark">E-mail:</strong> <a href="#"
+																	class="agent_email"> ${data.agent.email} </a> <input
+																	type="hidden" id="agent_id" value="" name="agent_id">
+																<input type="hidden" id="agent_code" value=""
+																	name="agent_code"> <input type="hidden"
+																	id="agent_name" value="" name="agent_name"> <input
+																	type="hidden" id="agent_address" value=""
+																	name="agent_address"> <input type="hidden"
+																	id="agent_phone" value="" name="agent_phone"> <input
+																	type="hidden" id="agent_email" value=""
+																	name="agent_email">
+															</address>
+														</div>
+													</div>
+													<div class="col-md-4 text-right">
+														<img src="/assets/images/no-profile-img.gif" alt=""
+															id="blah" class="optional agentImage"
+															style="height: 100px;">
+													</div>
+												</div>
+
+												<div class="row" id="agentBankAcc">
+													<div class="col-md-12">
+														<table
+															class="table table-condensed emp-selection-table agent-table"
+															style="margin-top: -5px;">
+															<thead>
+																<tr>
+																	<th>Bank Account</th>
+																	<th class="text-right">Balance</th>
+																	<th class="text-center">CRY</th>
+																	<th class="text-center">Type</th>
+																</tr>
+															</thead>
+															<tbody>
+																<c:forEach var="acctype2"
+																	items="${data.agentAccountList}">
+																	<tr>
+																		<td>
+																			<div class="row" id="agentBankAcc">
+																				<div class="col-md-12">
+																					<div class="form-group margin-bottom-0">
+																						<div
+																							class="clip-radio radio-primary optional margin-bottom-0 margin-top-0">
+																							<c:choose>
+																								<c:when
+																									test="${acctype2.subLedgerTypeName eq 'CD'}">
+																									<input id="${acctype2.accountName }"
+																										checked="checked" name="agent_account"
+																										class="agent_account" type="radio"
+																										value="${acctype2.accountName }">
+																									<label for="${acctype2.accountName }"
+																										class="control-label dirty-check">${acctype2.accountName }</label>
+
+																									<div id="acctype2_hidden_data">
+																										<input type="hidden" id="agent_account_name"
+																											name="agent_account_name"
+																											value="${acctype2.subLedgerTypeName }">
+																										<input type="hidden" id="agent_account_amount"
+																											name="agent_account_amount"
+																											value="${acctype2.doaCurrencyCode}">
+																										<input type="hidden"
+																											id="agent_account_currency"
+																											name="agent_account_currency"
+																											value="${acctype2.doaCurrencyName}">
+																										<input type="hidden" id="agent_account_type"
+																											name="agent_account_type"
+																											value="${acctype2.subLedgerTypeName}">
+																									</div>
+
+																								</c:when>
+																								<c:otherwise>
+																									<input id="${acctype2.accountName }"
+																										name="agent_account" class="agent_account"
+																										type="radio" value="${acctype2.accountName }">
+																									<label for="${acctype2.accountName }"
+																										class="control-label dirty-check">${acctype2.accountName }</label>
+																								</c:otherwise>
+																							</c:choose>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</td>
+																		<td class="text-right"><span>${acctype2.doaCurrencyCode}</span></td>
+																		<td class="text-center">${acctype2.doaCurrencyName}</td>
+																		<td class="text-center">${acctype2.subLedgerTypeName}</td>
+																	</tr>
+																</c:forEach>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</fieldset>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- --------------___ATTACHMENT SECTION_____------------------ -->
+					<div id="panel_abs_attachment" class="tab-pane fade">
+						<div id="step-4">
+							<jsp:include page="/WEB-INF/view/cbs_abs/common/attachment.jsp" />
+						</div>
+					</div>
+					<!-- 
+						cbsDebitAcc cbsDebitName cbsDebitAmt cbsDebitZero
+						cbsCreditAcc cbsCreditName cbsCreditZero cbsCreditAmt
+						
+						cbsFinalDebit
+						cbsFinalCredit
+						---------------------------------
+						glDebitAcc glDebitName glDebitAmt glDebitZero
+						glCreditAcc glCreditName glCreditZero glCreditAmt 
+						
+						glFinalDebit
+						glFinalCredit
+						-->
+					<!-- --------------ACCOUNTING SECTION ----------------- -->
+					<div id="panel_abs_accounting" class="tab-pane fade">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12">
+										<fieldset style="padding: 20px !important;">
+											<legend> CBS Posting &nbsp;&nbsp; </legend>
+											<div class="row" id="agentBankAcc">
+												<div class="col-md-12">
+													<table
+														class="table table-condensed emp-selection-table no-border table-borderless"
+														style="margin-top: -5px;" cellspacing="5">
+														<thead>
+															<tr>
+																<th>Account Number</th>
+																<th>Account Name</th>
+																<th class="text-right">Debit</th>
+																<th class="text-right">Credit</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td id="cbsDebitAcc"></td>
+																<td id="cbsDebitName"></td>
+																<td id="cbsDebitAmt" class="align-right"></td>
+																<td id="cbsDebitZero" class="text-right"></td>
+															</tr>
+															<tr>
+																<td id="cbsCreditAcc"></td>
+																<td id="cbsCreditName"></td>
+																<td id="cbsCreditZero" class="text-right"><b></b></td>
+																<td id="cbsCreditAmt" class="text-right"></td>
+															</tr>
+															<tr>
+																<td id=""></td>
+																<td id=""></td>
+																<td id="cbsFinalDebit"
+																	class="text-right money text-bold"
+																	style="background-color: #ECDAD6;"><b></b></td>
+																<td id="cbsFinalCredit"
+																	class="text-right money text-bold"
+																	style="background-color: #ECDAD6;"><b></b></td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12">
+										<fieldset style="padding: 20px !important;">
+											<legend> GL Posting &nbsp;&nbsp; </legend>
+											<div class="row" id="agentBankAcc">
+												<div class="col-md-12">
+													<table
+														class="table table-condensed emp-selection-table no-border table-borderless"
+														style="margin-top: -5px;" cellspacing="5">
+														<thead>
+															<tr>
+																<th>GL Number</th>
+																<th>GL Name</th>
+																<th class="text-right">Debit</th>
+																<th class="text-right">Credit</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td class="glDebitAcc" id="glDebitAcc"></td>
+																<td id="glDebitName"></td>
+																<td id="glDebitAmt" class="text-right">0.00</td>
+																<td id="glDebitZero" class="text-right">0.00</td>
+															</tr>
+															<tr>
+																<td class="agentGlAccNumber" id="glCreditAcc"></td>
+																<td id="glCreditName"></td>
+																<td id="glCreditZero" class="text-right">0.00</td>
+																<td id="glCreditAmt" class="text-right">0.00</td>
+															</tr>
+															<tr>
+																<td id=""></td>
+																<td id=""></td>
+																<td id="glFinalDebit" class="text-right text-bold"
+																	style="background-color: #ECDAD6;"><b></b></td>
+																<td id="glFinalCredit" class="text-right text-bold"
+																	style="background-color: #ECDAD6;"><b></b></td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+							<!-- ---------------------Practice -->
+							<div class="col-md-6">
+								<div class="row">
+									<%-- 	<c:forEach var="aaa" items="${data.products}">
+										<c:out value="${aaa.key}"></c:out>
+										</br>
+										<c:out value="${aaa.value}"></c:out>
+									</c:forEach> --%>
+								</div>
+								<!-- -------------Practice -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row margin-top-30 margin-bottom-30">
+				<div class="col-md-8">
+					<jsp:include page="../../../common/footerbuttons.jsp" />
+				</div>
+				<div class="col-md-4">
+					<c:choose>
+						<c:when test="${data.wfExists=='true'}">
+							<cts:Submit cssClass="save pull-right" name="&nbsp;Save Draft"
+								spanClass="save" />
+						</c:when>
+						<c:otherwise>
+							<cts:Submit cssClass="save pull-right" spanClass="save"
+								name="&nbsp;Save" />
+						</c:otherwise>
+					</c:choose>
+				</div>
+			</div>
+		</cts:AjaxForm>
+	</div>
 </div>
 
-<div class="row">
-	<h2>Show values</h2>
-	<p id="bankName"></p>
-	<p id="bankListName"></p>
-	<p id="altWorkstationLocation"></p>
 
-</div>
-<script src="/assets/js/my_api.js"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="vendor/jquery-file-upload/jquery.ctsfileuploader_common.js"></script>
+<script src="/assets/js/deposit_withdrawal.js"></script>
+<script src="/assets/js/abs/abs_common.js"></script>
+
+<!-- start: Common Footer -->
+<jsp:include page="/WEB-INF/view/common/commonfooter.jsp" />
+<!-- end: Common Footer -->
+<script>
+	
+</script>
+
 
 <script>
-	//InitHeadlers();
-	var pageUrl = "/cbs/abs/abs_deposit2/";
+	InitHandlers();
+	//accountTabDataGenerate();
+	$('.customerAccountTable').hide();
+	var pageUrl = "/cbs/abs/abs_deposit/";
 
-	function getBankBranch() {
+	/* 
+		customer_id
+		customer_code
+		customer_name
+		customer_address
+		customer_phone
+		customer_email 
+	 */
 
-		$.get(pageUrl + "getBankBranch/", {
+	/* 	.customer_information .customer_name
+		.customer_information .customer_address
+		.customer_information .customer_phone
+		.customer_information .customer_email 
+	 */
+
+	//------------- Set Data to hidden field : end -----------------------------------
+	generateHiddenFieldData();
+
+	$("#custAcc").text(
+			$("#customerBankAcc input[name='customer_account']:checked").val());
+	$("#custName").text($(".customer_name").text());
+	$("#agAcc").text(
+			$("#agentBankAcc input[name='agent_account']:checked").val());
+	$("#agName").text($(".agent_name").text());
+
+	//------------- Get Today from common.js
+	$("#transaction_date").val(GetToday());
+	$(".cheque_number").removeClass('required');
+	$(".cheque_date").removeClass('required');
+
+	//------------- Cheque Date Validation previous 6 months from current date
+	function setCurrentDateWithDatePicker(idOrClass) {
+
+		$(idOrClass).datepicker({
+			format : 'dd-M-yyyy',
+			startDate : '-6m',
+			endDate : '0m', //'+2d' | '-2m' | '-25y' | new Date()
+			autoclose : true
+
+		}).datepicker("setDate", "now");
+
+	}
+
+	$('.resources').hide();
+	//var select = this.value;
+
+	//------------------ Transaction Type Change------------------------
+	var showHideCashCheque = $('.transaction_type');
+
+	showHideCashCheque.change(function() {
+		var selectedValue = $(this).val();
+		//------------- For Hide And Show-------------------------------
+		if (selectedValue.toUpperCase() == 'CHEQUE') {
+
+			$(".cheque_number").addClass('required');
+			$(".cheque_date").addClass('required');
+			$('.agent-table').hide(500);
+			$('.resources').show(500);
+			setCurrentDateWithDatePicker("#cheque_date");
+
+			getBankBranch();
+			ajaxPostCallById(selectedValue); //------------- ajax call (get) dynamic attachment
+			generateHiddenFieldData();
+		} else if (selectedValue.toUpperCase() == 'CASH') {
+
+			$(".cheque_number").removeClass('required');
+			$(".cheque_date").removeClass('required');
+			$(".cheque_number").removeClass('required');
+			$('.resources').hide(500);
+			$('.agent-table').show(500);
+			$('.customerAccountTable').show(500);
+			$('.cheque_number').val("");
+
+			// -------------------- set data to hidden field
+			ajaxPostCallById(selectedValue);//------------- ajax call (get) dynamic attachment
+			accountTabDataGenerate(); //------------------- Generate Account Debit Credit Data
+			generateHiddenFieldData();
+		}
+
+	});
+
+	//------------- Ajax call To get Attachment by doaTypeCode ---------------------------
+
+	//----------- 4 major field of attachment, define with there id/class name as variable
+
+	var minAttachment = ".minimum-no-attachment";
+	var maxAttachment = ".maximum-no-attachment";
+	var reqFiles = ".requiredAttachment";
+	var dropdownAttachment = "#drop_attachment";
+
+	function ajaxPostCallById(doaTypeCode) {
+
+		$.get(pageUrl + "getAttachment/", {
+			trans_type_code : doaTypeCode.toUpperCase(),
 			async : false,
 			_csrf : "${_csrf.token}"
 		}, function(data, status) {
 
-			var bankList = data.bankList;
-			$('#bank_list').empty();
-			$.each(data.bankList, function(i, p) {
-				$('#bank_list').append(
+			var dropData = data.dropDown;
+			var dropDataRemoveLastComma = dropData.substring(0,
+					dropData.length - 1);
+			var dropDown = dropDataRemoveLastComma.split(',');
 
-				$('<option value="'+i+'">' + p + '</option>'));
+			$(minAttachment).text(data.reqFiles);
+			$(maxAttachment).text(data.maxFiles);
+
+			if (data.reqFilesNames == "") {
+				$(reqFiles).text("N/A");
+			} else {
+				var requiredFiles = data.reqFilesNames;
+				$(reqFiles).text(requiredFiles.replace(/,(\s+)?$/, ''));
+			}
+
+			$.each(dropDown, function(i, p) {
+				$(dropdownAttachment).append(
+						$('<option></option>').val(p).html(p));
+			});
+		});
+	}
+
+	var selectedVal = $(".transaction_type").val();
+	ajaxPostCallById(selectedVal);
+
+	//----------------- Get Bank And Branch -----------------------------------------------
+	//-------- on change: bank_code field
+	var filterBranchForBank = jQuery('#bank_code');
+
+	filterBranchForBank.change(function() {
+
+		var bankCode = $(this).val();
+		//accountTabDataGenerate(); //------------------- Generate Account Debit Credit Data
+
+		$.get(pageUrl + "getBranchByBankCode/", {
+			bankCode : bankCode,
+			async : false
+		}, function(data, status) {
+
+			var branchList = data.branchList;
+			$('#branch_code').empty();
+
+			$('#branch_code').append(
+					$('<option selected></option>').val("Any Branch").html(
+							"Any Branch"));
+			$.each(data.branchList,
+					function(i, p) {
+						$('#branch_code').append(
+								$('<option></option>').val(i).html(p));
+					});
+
+			generateHiddenFieldData();
+			accountTabDataGenerate();
+		});
+
+	});
+
+	//-------- on change: branch_code field
+	var branchField = jQuery('#branch_code');
+
+	branchField.change(function() {
+		generateHiddenFieldData();
+	});
+	//----------------------------------------- Get all bank and (branch for first bank): start -----------------------------------------
+	function getBankBranch() {
+		$
+				.get(
+						pageUrl + "getBankBranch/",
+						{
+							async : false,
+							_csrf : "${_csrf.token}"
+						},
+						function(data, status) {
+
+							var bankList = data.bankList;
+							var branchList = data.branchList;
+
+							$('#bank_code').empty();
+							$.each(data.bankList, function(i, p) {
+								$('#bank_code').append(
+										$('<option value="'+i+'">' + p
+												+ '</option>'));
+							});
+
+							$('#branch_code').empty();
+							$('#branch_code')
+									.append(
+											$('<option selected value="Any Branch">Any Branch</option>'));
+							$.each(data.branchList, function(i, p) {
+								$('#branch_code').append(
+										$('<option value="'+i+'">' + p
+												+ '</option>'));
+							});
+
+							generateHiddenFieldData();
+							accountTabDataGenerate(); //------------------- Generate Account Debit Credit Data
+						});
+	}
+
+	//----------------------------------------- Get all bank and (branch for first bank): start
+	//----------------------------------------------------------------------------------
+	var checkDate = $(".cheque_date").val();
+
+	$(".cheque_date").click(function() {
+		var selectedValue = $(this).val();
+	});
+
+	$(".customer_account").click(
+			function() {
+				var customer_account_type = getRadioCheckedAccountType(
+						"customer_account", 2);
+				$("#acctype1_hidden_data #customer_account_type").val(
+						customer_account_type);
+				generateHiddenFieldData();
+				accountTabDataGenerate();
 			});
 
-		});
+	$(".agent_account").click(
+			function() {
+				var agent_account_amount = getRadioCheckedAccountType(
+						"agent_account", 2);
+				var agent_account_currency = getRadioCheckedAccountType(
+						"agent_account", 3);
+				var agent_account_type = getRadioCheckedAccountType(
+						"agent_account", 4);
 
-	}
-	getBankBranch();
+				$("#acctype2_hidden_data #agent_account_amount").val(
+						agent_account_amount);
+				$("#acctype2_hidden_data #agent_account_currency").val(
+						agent_account_currency);
+				$("#acctype2_hidden_data #agent_account_type").val(
+						agent_account_type);
 
-	function submitFunction() {
-		var bankName = document.getElementById("branch_name").value;
-		var bankList = document.getElementById("bank_list");
-		var bankListValue = bankList.options[bankList.selectedIndex].text;
-		//debugger;
-		var data = {
-			apiKey : "ZWR1Y2l0aW9uQkRBMTIzNDU2Nzg5",
-			ids : [ "3c791b1e-c55e-4283-b7ff-faa4dac21a7b" ],
-			username : bankName,
-			companyName : bankListValue
+				generateHiddenFieldData();
+				accountTabDataGenerate();
+			});
+
+	$("#customerBankAcc").find("input").each(function(index, element) {
+		if (element.value == "SB") {
+			$("#SB").attr('checked', true);
 		}
-		var data2 = JSON.stringify(data);
-		var url = "http://192.168.100.122:9016/get_employee_by_id";
-		postMethod(url, data2);
+	});
+
+	$("#agentBankAcc").find("input").each(function(index, element) {
+		if (element.value == "CD") {
+			$("#agentBankAcc #CD").attr('checked', true);
+		}
+	});
+
+	$("#btnEmployee")
+			.on(
+					"click",
+					function() {
+						var code = $('#company_code').val();
+						var customer_fundamental_type = "Customer";
+						console.log("Find employees");
+						//ShowModal("crm/clc/customer_verification/create?action_type_code=SELECT&actioncallback=loadEmployee2");
+						ShowModal("crm/clc/banking_customer/quicksearchbcustomershow?action_type_code=SELECT&actioncallback=loadEmployee&company_code="
+								+ code
+								+ "&customer_fundamental_type="
+								+ customer_fundamental_type);
+					});
+
+	$("#varifyBiometricEmployee")
+			.on(
+					"click",
+					function() {
+
+						var code = $('#company_code').val();
+
+						//ShowModal("hrm/ed/employee/quicksearchemployeeshow?action_type_code=SELECT&actioncallback=loadEmployee&company_code="+ code);
+						ShowModal("crm/clc/customer_verification/create?action_type_code=SELECT&actioncallback=loadEmployee2");
+					});
+
+	function loadEmployee(emp) {
+
+		var customer = JSON.parse(unescape(emp));
+		console.log(customer);
+
+		var customer_name = customer.entityName;
+		/* var customer_address = customer.entityAddress; */
+		var customer_address = customer.districtName;
+		var customer_phone = customer.mobile;
+		var customer_email = customer.email;
+		var customerImageId = customer.id;
+
+		if (customer_phone == '') {
+			customer_phone = customer.phone;
+		}
+
+		$(".customer_name").text(customer_name);
+		$(".customer_address").text(customer_address);
+		$(".customer_phone").text(customer_phone);
+		$(".customer_email").text(customer_email);
+		$(".customerImage img").attr(
+				"src",
+				"assets/images/company/CTS/emp/photo/" + customerImageId
+						+ ".jpg");
+
+		$('.customerAccountTable').show(500);
+
+		$("#customer_id").val(customerImageId);
+		$("#customer_code").val(customer.entityCode);
+
+		loadBankAccount(customer.entityCode);
+
+		generateHiddenFieldData();
+		accountTabDataGenerate();
+		HideModal('search-modal');
+
 	}
 
-	function postMethod(url, data2) {
-		$.ajax({
-			type : "POST",
-			contentType : "application/json",
-			url : url,
-			data : data2,
-			headers : {
-				'latLng' : '23.7682614,90.4170818'
-			},
-			dataType : 'json',
-			success : function(data) {
-				try {
-					successMethod(data);
-				} catch (e) {
-					console.log(e);
-				}
-			},
-			error : function(res, status) {//debugger;
-				ShowErrorMsg("Error!",
-						"Something went worng, Please try again..");
-				console.log(status, res);
-				console.log("Error!", res.responseJSON.message[0]);
-			}
-		});
+	/* ------------------------Kamrul Hasan------------------- */
+	/* ------------------------Bank Account------------------- */
+
+	function loadBankAccount(entityCode) {
+		console.log("Load Bank Accounts");
+		console.log(pageUrl);
+		console.log(entityCode);
+		$
+				.get(
+						pageUrl + "getCustomerBankAccount/",
+						{
+							entityCode : entityCode,
+							async : false
+						},
+						function(data, status) {
+							console.log("bank account ===========", data);
+							console.log(data.length);
+
+							for (var i = 0; i < data.length; i++) {
+								var accountNumber = data[i].accountNumber;
+								var accountType = data[i].productSubgroupName;
+
+								if (i == 0) {
+									console.log("IF");
+									console.log(accountNumber);
+									console.log(accountType);
+								} else {
+									console.log("ELSE");
+									console.log(accountNumber);
+									console.log(accountType);
+								}
+
+							}
+
+							for (var i = 0; i < data.length; i++) {
+								/* 		var accountInfoHtml = '<tr><td>' + data[i].accountNumber
+												+ '</td>';
+										accountInfoHtml += '<td>' + data[i].entityFundamentalType + '</td>';
+										accountInfoHtml += '</tr>';
+								 */
+
+								var accountInfoHtml = '<tr><td><div class="row"><div class="col-md-12"><div class="form-group margin-bottom-0">';
+								accountInfoHtml += '<div class="clip-radio radio-primary optional margin-bottom-0 margin-top-0 ">';
+								if (i == 0) {
+									accountInfoHtml += '<input id="{$data[i].accountNumber}" checked="checked" name="customer_account" class="customer_account" type="radio" value="{$data[i].accountNumber}">';
+
+								} else {
+									accountInfoHtml += '<input id="{$data[i].accountNumber}" name="customer_account" class="customer_account" type="radio" value="{$data[i].accountNumber}">';
+
+								}
+
+								accountInfoHtml += ' <label for="{$data[i].accountNumber}" class="control-label dirty-check">'
+										+ data[i].accountNumber + '</label> ';
+								accountInfoHtml += '</div></div></div></div></td>	<td class="text-center">'
+										+ data[i].productSubgroupName
+										+ '</td></tr>'
+
+								$('.customerAccountDetails').append(
+										accountInfoHtml);
+
+							}
+
+						});
+
 	}
-	function successMethod(response) {
-		var response = response;
+	/* ------------------------------------------------------- */
 
-		if (response.responseCode == 200) {
+	$.each($('td.money:not(.money-linked)'), function(i, item) {
+		var res = FormatMoney($(this).val());
+		$("#finalCredit b").text(res);
 
-			var data = response.data;
+	});
 
-			var bankName = data.username;
-			var bankListName = data.companyName;
-			var altWorkstationLocation = data.altWorkstationLocation;
+	//------------ Testing Perpouse. Should REMOVE Later.
+	$(".submitButton").click(function() {
+		var trans_type = $('.transaction_type').val();
+		console.log("Submitted ------------ " + trans_type.toUpperCase());
+		generateHiddenFieldData();
+	});
 
-			if (data) {
-				//	debugger;
-				showFunction(bankName, bankListName, altWorkstationLocation);
-				//	ShowSuccessMsg("Success", "Save successful");
-
-			} else {
-				//ShowErrorMsg("Error", "Failed to save");
-			}
-			//end loop for device 
+	function showMessage(data) {
+		var priv = data.data.privCode;
+		if (data.outcome == 'success') {
+			ShowSuccessMsg('Saved successfully', data.message);
+			isDirty = false;
+			LoadMainContent(pageUrl + "show/" + data.id + "/" + data.mode
+					+ '/CREATE/?priv_code=' + priv);
 		} else {
-			//ShowErrorMsg("Error", "Failed to save");
+			ShowErrorMsg('Unsuccessful', 'Failed');
 		}
-	}
-
-	function showFunction(bankName, bankListName, altWorkstationLocation) {
-		document.getElementById("bankName").innerHTML = bankName;
-		document.getElementById("bankListName").innerHTML = bankListName;
-		document.getElementById("altWorkstationLocation").innerHTML = altWorkstationLocation
 	}
 </script>
+
+<!-- Git Push Time : 20 Dec, 08:00 PM -->
